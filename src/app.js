@@ -11,6 +11,7 @@ const profileRouter = require("./routes/profile");
 const userRouter = require("./routes/user");
 const cors = require("cors");
 require("dotenv").config();
+require("./utils/cronJob");
 
 const app = express();
 
