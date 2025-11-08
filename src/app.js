@@ -9,7 +9,9 @@ const requestRouter = require("./routes/request");
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const userRouter = require("./routes/user");
+const initializeSocket = require("./utils/socket");
 const cors = require("cors");
+const http = require("http");
 require("dotenv").config();
 require("./utils/cronJob");
 
@@ -25,10 +27,13 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", userRouter);
 
+const server = http.createServer(app);
+initializeSocket(server);
+
 connectDB()
   .then(() => {
     console.log("Database connection established");
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       console.log("Server is running on PORT 3000");
     });
   })
