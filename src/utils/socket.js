@@ -25,7 +25,11 @@ const initializeSocket = (server) => {
     });
     socket.on("sendMessage", ({ firstName, userId, targetUserId, text }) => {
       const roomId = getSecretRoomId(userId, targetUserId);
-      io.to(roomId).emit("messageReceived", { firstName, text });
+      io.to(roomId).emit("messageReceived", {
+        firstName,
+        text,
+        senderId: userId,
+      });
 
       console.log(firstName + ": ", text);
     });
