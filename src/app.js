@@ -12,6 +12,7 @@ const userRouter = require("./routes/user");
 const initializeSocket = require("./utils/socket");
 const cors = require("cors");
 const http = require("http");
+const chatRouter = require("./routes/chat");
 require("dotenv").config();
 require("./utils/cronJob");
 
@@ -26,6 +27,7 @@ app.use("/", requestRouter);
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", userRouter);
+app.use("/", chatRouter);
 
 const server = http.createServer(app);
 initializeSocket(server);
