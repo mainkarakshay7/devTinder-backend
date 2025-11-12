@@ -1,6 +1,7 @@
 const socket = require("socket.io");
 const crypto = require("crypto");
 const Chat = require("../models/chat");
+const ConnectionRequest = require("../models/connectionRequest");
 
 const getSecretRoomId = (userId, targetUserId) => {
   return crypto
@@ -28,9 +29,30 @@ const initializeSocket = (server) => {
       "sendMessage",
       async ({ firstName, lastName, userId, targetUserId, text }) => {
         try {
+          const areTheyConnection = await ConnectionRequest.find({
+            $or: [
+              {
+                toUserId: targetUserId,
+                fromUserId: userId,
+                status: "accepted",
+              },
+              {
+                toUserId: userId,
+                fromUserId: targetUserId,
+                status: "accepted",
+              },
+            ],
+          });
+
+          if (ConnectionRequest?.length === 0) {
+            console.err("You can only send messages to your connections!");
+            return;
+          }
+
           const roomId = getSecretRoomId(userId, targetUserId);
 
-          //TODO: check if userId and targetUserId are connections or not
+          //TODO: feat implement green dot when online
+          //TODO: limit messages when chat is getting fetched from db
 
           let chat = await Chat.findOne({
             participants: { $all: [userId, targetUserId] },
